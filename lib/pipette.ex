@@ -7,6 +7,7 @@ defmodule Pipette do
 
   @doc """
   Render a template file with `data`.
+  Returns `{data, rendered_string}`, or `{:error, reason}` if an error occurs.
 
   ## Data
   Same as `build/2`.
@@ -27,17 +28,22 @@ defmodule Pipette do
     post_fn = Dict.get(options, :post, &identity/1)
 
     data = pre_fn.(data)
-    {data, data |> render |> post_fn.()}
+    case render(data) do
+      {:ok, body} -> {data, post_fn.(body)}
+      error       -> error
+    end
   end
 
   defp render(%{template: tmpl} = data) do
-    tmpl
-    |> EEx.eval_file(Dict.to_list(data))
-    |> String.strip
+    case tmpl |> File.read do
+      {:ok, body} -> {:ok, body |> EEx.eval_string(Dict.to_list(data)) |> String.strip}
+      error       -> error
+    end
   end
 
   @doc """
   Build text file from `data` and write.
+  Returns `:ok`, or `{:error, reason}` if an error occurs.
 
   ## Data
   * `:template` - Path to template file.
@@ -58,7 +64,9 @@ defmodule Pipette do
 
   """
   def build(data, options \\ []) do
-    {%{destination: dest}, body} = render(data, options)
-    File.write!(dest, body)
+    case render(data, options) do
+      {%{destination: dest}, body} -> File.write(dest, body)
+      error                        -> error
+    end
   end
 end

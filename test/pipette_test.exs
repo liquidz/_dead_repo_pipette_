@@ -9,12 +9,15 @@ defmodule PipetteTest do
     destination: "world.txt",
     msg:         "world"
   }
+  @error_data %{
+    template:    "not_existing_file.txt"
+  }
 
   defp mock_read(expected) do
-    [read!: fn _ -> expected end]
+    [read: fn _ -> {:ok, expected} end]
   end
   defp mock_write(expected) do
-    [write!: fn (path, body) ->
+    [write: fn (path, body) ->
         case expected do
           :path -> path
           :body -> body
@@ -26,6 +29,11 @@ defmodule PipetteTest do
   test_with_mock "simple render", File, [:passthrough], mock_read(@test_tmpl) do
     res = Pipette.render(@test_data, [])
     assert res == {@test_data, "hello, world"}
+  end
+
+  test "render error" do
+    {res, _} = Pipette.render(@error_data, [])
+    assert res == :error
   end
 
   test_with_mock "render with pre", File, [:passthrough], mock_read(@test_tmpl) do
@@ -44,6 +52,11 @@ defmodule PipetteTest do
   File, [:passthrough], mock_read(@test_tmpl) ++ mock_write(:ok) do
     res = Pipette.build(@test_data)
     assert res == :ok
+  end
+
+  test "build error" do
+    {res, _} = Pipette.build(@error_data)
+    assert res == :error
   end
 
   test_with_mock "build with pre",
