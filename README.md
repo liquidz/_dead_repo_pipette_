@@ -1,6 +1,9 @@
 Pipette
 =======
 
+[![Build Status](https://travis-ci.org/liquidz/pipette.svg?branch=master)](https://travis-ci.org/liquidz/pipette)
+[![Hex.pm](https://img.shields.io/hexpm/v/pipette.svg)](https://hex.pm/packages/pipette)
+
 ## Installation
 
 * mix.exs

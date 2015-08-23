@@ -11,7 +11,7 @@ defmodule Pipette.Mixfile do
       app:          :pipette,
       version:      "0.0.1",
       elixir:       "~> 1.0",
-      name:         "R1",
+      name:         "Pipette",
       source_url:   @url,
       description:  @description,
       package:      package,
