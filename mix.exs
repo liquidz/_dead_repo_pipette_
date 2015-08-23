@@ -32,7 +32,6 @@ defmodule Pipette.Mixfile do
       {:mock,    "~> 0.1.1"},
       {:earmark, "~> 0.1", only: :dev},
       {:ex_doc,  "~> 0.8", only: :dev},
-
       {:junit_formatter, "~> 0.0.2", only: :test},
     ]
   end
