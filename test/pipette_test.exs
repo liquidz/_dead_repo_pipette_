@@ -72,4 +72,14 @@ defmodule PipetteTest do
     res  = Pipette.build(@test_data, post: post)
     assert res == "[hello, world]"
   end
+
+  test "make directories in building file" do
+    with_mock File, [:passthrough], mock_read(@test_tmpl) ++ mock_write(:ok) ++ [mkdir_p!: fn _ -> :ok end] do
+        new_dest = "foo/bar/baz.txt"
+        res      = Pipette.build(@test_data, pre: &Dict.put(&1, :destination, new_dest))
+
+        assert res == :ok
+        assert called File.mkdir_p!("foo/bar")
+    end
+  end
 end
