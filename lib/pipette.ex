@@ -65,8 +65,15 @@ defmodule Pipette do
   """
   def build(data, options \\ []) do
     case render(data, options) do
-      {%{destination: dest}, body} -> File.write(dest, body)
-      error                        -> error
+      {%{destination: dest}, body} ->
+        dir = Path.dirname(dest)
+        unless File.dir?(dir) do
+          File.mkdir_p!(dir)
+        end
+        File.write(dest, body)
+
+      error ->
+        error
     end
   end
 end
