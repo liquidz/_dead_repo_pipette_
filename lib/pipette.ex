@@ -18,7 +18,7 @@ defmodule Pipette do
   ## Examples
 
       iex> File.read!("test/files/hello.txt")
-      "hello, <%= msg %>\\n"
+      "hello, <%= @msg %>\\n"
       iex> Pipette.render(%{template: "test/files/hello.txt", msg: "world"}, [])
       {%{msg: "world", template: "test/files/hello.txt"}, "hello, world"}
 
@@ -36,7 +36,7 @@ defmodule Pipette do
 
   defp render(%{template: tmpl} = data) do
     case tmpl |> File.read do
-      {:ok, body} -> {:ok, body |> EEx.eval_string(Dict.to_list(data)) |> String.strip}
+      {:ok, body} -> {:ok, body |> EEx.eval_string(assigns: data) |> String.strip}
       error       -> error
     end
   end
@@ -56,7 +56,7 @@ defmodule Pipette do
   ## Examples
 
       iex> File.read!("test/files/hello.txt")
-      "hello, <%= msg %>\\n"
+      "hello, <%= @msg %>\\n"
       iex> Pipette.build(%{template: "test/files/hello.txt", destination: "test/files/world.txt", msg: "world"})
       :ok
       iex> File.read!("test/files/world.txt")
