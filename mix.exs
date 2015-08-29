@@ -9,7 +9,7 @@ defmodule Pipette.Mixfile do
   def project do
     [
       app:          :pipette,
-      version:      "0.0.3",
+      version:      "0.0.4",
       elixir:       "~> 1.0",
       name:         "Pipette",
       source_url:   @url,

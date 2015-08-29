@@ -3,7 +3,7 @@ defmodule PipetteTest do
   import Mock
   doctest Pipette
 
-  @test_tmpl "hello, <%= msg %>"
+  @test_tmpl "hello, <%= @msg %>"
   @test_data %{
     template:    "hello.txt",
     destination: "world.txt",
@@ -13,22 +13,15 @@ defmodule PipetteTest do
     template:    "not_existing_file.txt"
   }
 
-  defp mock_read(expected) do
-    [read: fn _ -> {:ok, expected} end]
-  end
-  defp mock_write(expected) do
-    [write: fn (path, body) ->
-        case expected do
-          :path -> path
-          :body -> body
-          _     -> expected
-        end
-    end]
-  end
-
   test_with_mock "simple render", File, [:passthrough], mock_read(@test_tmpl) do
     res = Pipette.render(@test_data, [])
     assert res == {@test_data, "hello, world"}
+  end
+
+  test_with_mock "render with not assigned variable", File, [:passthrough], mock_read(@test_tmpl) do
+    data = Dict.drop(@test_data, [:msg])
+    res = Pipette.render(data, [])
+    assert res == {data, "hello,"}
   end
 
   test "render error" do
@@ -82,4 +75,18 @@ defmodule PipetteTest do
         assert called File.mkdir_p!("foo/bar")
     end
   end
+
+  defp mock_read(expected) do
+    [read: fn _ -> {:ok, expected} end]
+  end
+  defp mock_write(expected) do
+    [write: fn (path, body) ->
+        case expected do
+          :path -> path
+          :body -> body
+          _     -> expected
+        end
+    end]
+  end
+
 end

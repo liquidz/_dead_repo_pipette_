@@ -1,1 +1,1 @@
-hello, <%= msg %>
+hello, <%= @msg %>

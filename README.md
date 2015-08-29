@@ -18,7 +18,7 @@ end
 * build
 ```elixir
 iex> File.read!("hello.txt")
-"hello, <%= msg %>\n"
+"hello, <%= @msg %>\n"
 iex> Pipette.build(%{template: "hello.txt", destination: "world.txt", msg: "world"})
 :ok
 iex> File.read!("world.txt")
